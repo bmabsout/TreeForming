@@ -38,6 +38,9 @@
              pkgs.inotify-tools
              ghc-with-deps
              pkgs.feh
+	     pkgs.haskellPackages.implicit-hie
+             pkgs.haskellPackages.retrie
+             pkgs.haskellPackages.hoogle
              pkgs.cabal-install
              pkgs.haskell-language-server
              vscodium-with-extensions

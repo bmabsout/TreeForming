@@ -1,43 +1,53 @@
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE OverloadedRecordDot #-}
+{-# LANGUAGE BlockArguments #-}
 
-module TreeShaping.Lib (module TreeShaping.Lib, module Common) where
+module TreeShaping.Lib where
 
 import Common
 import Diagrams.Prelude
-import Linear
-import Diagrams.Backend.SVG (loadImageSVG, renderSVG)
+import Data.Functor.Foldable.TH
+import Data.Functor.Foldable
 
-data Square a b c d = Square {topl :: a, topr :: b, botl :: c, botr :: d}
-  deriving (Show, Eq, Functor, Foldable)
+data Square a = Sq {topl :: a, topr :: a, botl :: a, botr :: a}
+  deriving (Show, Eq, Functor, Foldable, Traversable)
 
-newtype Circle a = Circle a
-  deriving (Show, Eq, Functor)
+pattern Square :: Shapes -> Shapes -> Shapes -> Shapes -> Shapes
+pattern Square{topl, topr, botl, botr} = S (Sq {topl, topr, botl, botr})
 
-data Leaf = Leaf
+newtype Circle a = Circ a
+  deriving (Show, Eq, Functor, Foldable, Traversable)
 
-class Drawable a where
-  draw :: (Renderable (Path V2 Double) b) => Diag b -> a -> Diag b
+pattern Circle :: Shapes -> Shapes
+pattern Circle a = C (Circ a)
 
-instance (Drawable a, Drawable b, Drawable c, Drawable d) => Drawable (Square a b c d) where
-  draw leaf (Square {..}) =
-    let V4 toplShape toprShape botlShape botrShape =
-          padSubDiagsAndResize (V4 (draw leaf topl) (draw leaf topr) (draw leaf botl) (draw leaf botr))
-        subDiagram =
-          (toplShape ||| toprShape)
-            === (botlShape ||| botrShape)
-     in subDiagram # center <> square (maximum $ size subDiagram) # themed
+data Shapes =
+  S (Square Shapes) | C (Circle Shapes) | Leaf
+makeBaseFunctor ''Shapes
 
-instance Drawable a => Drawable (Circle a) where
-  draw leaf (Circle subshape) = subDiagram <> circle (norm (size subDiagram) / 2) # themed
+
+class Drawable f where
+  draw :: (Renderable (Path V2 Double) a) => f (Diag a) -> Diag a
+
+instance Drawable Square where
+  draw sq = subDiagram # center <> square (maximum $ size subDiagram) # themed
     where
-      subDiagram = draw leaf subshape
+      paddedSq = padSubDiagsAndResize sq
+      subDiagram =
+            paddedSq.topl ||| paddedSq.topr
+        === paddedSq.botl ||| paddedSq.botr
 
-instance Drawable Leaf where
-  draw leaf Leaf = leaf
+instance Drawable Circle where
+  draw :: Renderable (Path V2 Double) a => Circle (Diag a) -> Diag a
+  draw (Circ subDiagram) = subDiagram <> circle (norm (size subDiagram) / 2) # themed
+
+
+drawShape :: _ => Diag a -> Shapes -> Diag a
+drawShape leaf = cata \case
+  SF s -> draw s
+  CF c -> draw c
+  LeafF -> leaf
 
 example :: _
 example =
@@ -53,10 +63,10 @@ example2 :: _
 example2 = Square example example example Leaf
 
 example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiagram = draw leafDiagram example2
+example2Diag leafDiagram = drawShape leafDiagram example2
 
 exampleDiag :: _ => Diag a -> Diag a
-exampleDiag leafDiagram = draw leafDiagram example
+exampleDiag leafDiagram = drawShape leafDiagram example
 
 main :: IO ()
 main = runMain example2Diag
