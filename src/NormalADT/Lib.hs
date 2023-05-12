@@ -1,10 +1,7 @@
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
-module NormalADT.Lib (module NormalADT.Lib, module Common) where
+
+
+module NormalADT.Lib (Shapes(..), shapeToDiagram, example, example2) where
 
 import Diagrams.Prelude
 import Common
@@ -46,3 +43,5 @@ example2Diag leafDiagram = shapeToDiagram leafDiagram example2
 exampleDiag :: _ => Diag a -> Diag a
 exampleDiag leafDiagram = shapeToDiagram leafDiagram example
 
+main :: IO ()
+main = runMain example2Diag

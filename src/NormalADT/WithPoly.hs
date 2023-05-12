@@ -7,7 +7,7 @@
 module NormalADT.WithPoly where
 
 import Diagrams
-import NormalADT.Lib (Diag, padSubDiagsAndResize, themed)
+import Common
 import Linear
 
 data Shapes
@@ -70,3 +70,6 @@ shapeToDiagram leafDiagram = recurse
 
 example2Diag :: _ => Diag a -> Diag a
 example2Diag leaf = shapeToDiagram leaf example3
+
+main :: IO ()
+main = runMain example2Diag

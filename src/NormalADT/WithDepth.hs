@@ -1,14 +1,10 @@
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 module NormalADT.WithDepth where
 import Diagrams
-import NormalADT.Lib
 import Diagrams.Prelude
 import Linear
+import Common
 
+import NormalADT.Lib
 
 
 shapeToDiagramWithDepth :: forall a. Renderable (Path V2 Double) a => Diag a -> Shapes -> Diag a
@@ -31,3 +27,6 @@ shapeToDiagramWithDepth leafDiagram = recurse 0
 
 example2Diag :: _ => Diag a -> Diag a
 example2Diag leafDiag = shapeToDiagramWithDepth leafDiag example2
+
+main :: IO ()
+main = runMain example2Diag

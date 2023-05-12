@@ -1,6 +1,6 @@
 module Common.Theme where
 import Data.Colour
-import Data.Colour.SRGB (toSRGB, sRGB24read)
+import Data.Colour.SRGB (sRGB24read)
 
 data Theme a = Theme {
     base03:: a,

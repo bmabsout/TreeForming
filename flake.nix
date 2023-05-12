@@ -38,6 +38,7 @@
              pkgs.inotify-tools
              ghc-with-deps
              pkgs.feh
+             pkgs.cabal-install
              pkgs.haskell-language-server
              vscodium-with-extensions
            ];

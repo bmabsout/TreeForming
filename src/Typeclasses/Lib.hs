@@ -4,7 +4,7 @@
 {-# OPTIONS_GHC -Wno-partial-type-signatures #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Typeclasses.Lib (module Typeclasses.Lib, module Common) where
+module Typeclasses.Lib (Square(..), Circle(..), Leaf(..), Drawable(..), example, example2) where
 
 import Diagrams.Prelude
 import Common
@@ -57,3 +57,5 @@ example2Diag leafDiagram = draw leafDiagram example2
 
 exampleDiag :: _ => Diag a -> Diag a
 exampleDiag leafDiagram = draw leafDiagram example
+
+main = runMain example2Diag
