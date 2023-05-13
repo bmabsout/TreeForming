@@ -3,7 +3,6 @@ import Common
 import Diagrams.Prelude hiding (square, circle, apply)
 import qualified Diagrams.Prelude as D
 import Linear
-import Diagrams.Backend.SVG
 
 class Shapes repr where
     square :: (Renderable (Path V2 Double) a) => V4 (repr (Diag a)) -> repr (Diag a)
@@ -22,17 +21,14 @@ instance Shapes Identity where
     leaf = Identity
 
 
+example2 :: (Shapes repr, Renderable (Path V2 Double) a) =>
+    Diag a -> repr (Diag a)
 example2 leafDiag = square (V4 (circle example) l l (circle l))
     where l = leaf leafDiag
           example = square (V4 l (circle l) (circle $ circle l) l)
 
+example2Diag :: Renderable (Path V2 Double) a => Diag a -> Diag a
 example2Diag leafDiag = runIdentity (example2 leafDiag)
 
 main :: IO ()
-main = do
-  leaf <- loadImageSVG "leaf.png"
-  -- let diag =  frame 100 $ NormalADT.Lib.example2Diag leaf
-  -- let diag =  frame 100 $ NormalADT.WithDepth.example2Diag leaf
-  let diag =  frame 100 $ example2Diag leaf
-  -- let diag =  frame 100 $ Typeclasses.Lib.example2Diag leaf
-  renderSVG "diagram.svg" (mkSizeSpec (V2 (Just 400) Nothing)) diag
+main = runMain example2Diag

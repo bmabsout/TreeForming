@@ -3,29 +3,46 @@
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE BlockArguments #-}
 
-module TreeShaping.Lib where
+module TreeShaping.Lib(
+  Square(..),
+  pattern Square,
+  Circle(..),
+  pattern Circle,
+  Drawable(..),
+  Shapes(..),
+  ShapesF(..),
+  drawShape,
+  drawShapeF,
+  example,
+  example2
+) where
 
 import Common
 import Diagrams.Prelude
 import Data.Functor.Foldable.TH
 import Data.Functor.Foldable
+import Text.Show.Deriving
 
 data Square a = Sq {topl :: a, topr :: a, botl :: a, botr :: a}
   deriving (Show, Eq, Functor, Foldable, Traversable)
-
-pattern Square :: Shapes -> Shapes -> Shapes -> Shapes -> Shapes
-pattern Square{topl, topr, botl, botr} = S (Sq {topl, topr, botl, botr})
+$(deriveShow1 ''Square)
 
 newtype Circle a = Circ a
   deriving (Show, Eq, Functor, Foldable, Traversable)
 
-pattern Circle :: Shapes -> Shapes
-pattern Circle a = C (Circ a)
+$(deriveShow1 ''Circle)
+
+
 
 data Shapes =
   S (Square Shapes) | C (Circle Shapes) | Leaf
+  -- deriving (Show)
 makeBaseFunctor ''Shapes
+$(deriveShow1 ''ShapesF)
 
+pattern Square{topl, topr, botl, botr} = S (Sq {topl, topr, botl, botr})
+
+pattern Circle a = C (Circ a)
 
 class Drawable f where
   draw :: (Renderable (Path V2 Double) a) => f (Diag a) -> Diag a
@@ -35,19 +52,21 @@ instance Drawable Square where
     where
       paddedSq = padSubDiagsAndResize sq
       subDiagram =
-            paddedSq.topl ||| paddedSq.topr
-        === paddedSq.botl ||| paddedSq.botr
+            (paddedSq.topl ||| paddedSq.topr)
+        === (paddedSq.botl ||| paddedSq.botr)
 
 instance Drawable Circle where
   draw :: Renderable (Path V2 Double) a => Circle (Diag a) -> Diag a
   draw (Circ subDiagram) = subDiagram <> circle (norm (size subDiagram) / 2) # themed
 
+drawShapeF :: _ => Diag a -> ShapesF (Diag a) -> Diag a
+drawShapeF leaf = \case
+  SF s  -> draw s
+  CF s  -> draw s
+  LeafF -> leaf
 
 drawShape :: _ => Diag a -> Shapes -> Diag a
-drawShape leaf = cata \case
-  SF s -> draw s
-  CF c -> draw c
-  LeafF -> leaf
+drawShape leaf = cata (drawShapeF leaf)
 
 example :: _
 example =
@@ -62,11 +81,6 @@ example =
 example2 :: _
 example2 = Square example example example Leaf
 
-example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiagram = drawShape leafDiagram example2
-
-exampleDiag :: _ => Diag a -> Diag a
-exampleDiag leafDiagram = drawShape leafDiagram example
 
 main :: IO ()
-main = runMain example2Diag
+main = runMain (`drawShape` example2)

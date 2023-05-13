@@ -51,29 +51,13 @@ extra-doc-files:    CHANGELOG.md
 -- Extra source files to be distributed with the package, such as examples, or a tutorial module.
 -- extra-source-files:
 
-common shared
-    ghc-options: -Wall -Wno-partial-type-signatures -Wno-unused-top-binds
-
-executable TreeForming
-    -- Import common warning flags.
-    import:           shared
-
-    -- .hs or .lhs file containing the Main module.
-    main-is:          Main.hs
-
-    -- Modules included in this executable, other than Main.
-    other-modules:
-        Common
-        Common.Theme
-        NormalADT.Lib
-        NormalADT.WithDepth
-        NormalADT.WithPoly
-        Typeclasses.Lib
-        Typeclasses.WithDepth
-        Typeclasses.WithTriangle
-        TreeShaping.Lib
-        
-
+library treeforming
+    ghc-options:
+        -Wall
+        -Wno-partial-type-signatures
+        -Wno-unused-top-binds
+        -Wno-missing-signatures
+        -Wno-missing-pattern-synonym-signatures
     -- LANGUAGE extensions used by modules in this package.
     default-extensions:
         LambdaCase
@@ -81,6 +65,8 @@ executable TreeForming
         PartialTypeSignatures
         RecordWildCards
         PatternSynonyms
+        OverloadedRecordDot
+        BlockArguments
         
 
     -- Other library packages from which modules are imported.
@@ -90,10 +76,24 @@ executable TreeForming
         diagrams-lib,
         linear,
         recursion-schemes,
-        colour
+        colour,
+        comonad,
+        data-fix,
+        deriving-compat,
+        free
+
 
 
     -- Directories containing source files.
     hs-source-dirs:   src
     -- Base language which the package is written in.
     default-language: GHC2021
+
+-- library typeclasses
+--     import: shared
+
+
+
+        
+
+

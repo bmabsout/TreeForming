@@ -17,7 +17,7 @@ padSubDiagsAndResize l = setDiagToMaxSize <$> diagrams
 
 
 themed :: Diag a -> Diag a
-themed = lc Theme.color.base03 . fc Theme.color.base3
+themed = lc Theme.color.base03 . recommendFillColor Theme.color.base3
 
 depthToTheme :: Integral n => n -> Diag a -> Diag a
 depthToTheme level = depthColor . lc Theme.color.base03

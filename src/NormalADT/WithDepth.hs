@@ -26,7 +26,7 @@ shapeToDiagramWithDepth leafDiagram = recurse 0
 
 
 example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiag = shapeToDiagramWithDepth leafDiag example2
+example2Diag leafDiag = shapeToDiagramWithDepth leafDiag example
 
 main :: IO ()
 main = runMain example2Diag
