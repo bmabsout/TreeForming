@@ -1,7 +1,5 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE OverloadedRecordDot #-}
-{-# LANGUAGE BlockArguments #-}
 
 module TreeShaping.Lib(
   Square(..),
@@ -29,7 +27,6 @@ $(deriveShow1 ''Square)
 
 newtype Circle a = Circ a
   deriving (Show, Eq, Functor, Foldable, Traversable)
-
 $(deriveShow1 ''Circle)
 
 
@@ -73,13 +70,13 @@ example =
   Circle $
     Circle $
       Square
-        (Circle (Circle Leaf))
-        (Circle Leaf)
-        Leaf
-        (Circle Leaf)
+        (Circle (Circle Leaf)) (Circle Leaf)
+        Leaf                   (Circle Leaf)
 
 example2 :: _
-example2 = Square example example example Leaf
+example2 = Square
+  example example
+  example Leaf
 
 
 main :: IO ()

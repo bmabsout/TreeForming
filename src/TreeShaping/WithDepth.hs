@@ -22,5 +22,5 @@ drawWithDepth diagAlg withDepth leaf =
 
 
 main :: IO ()
--- main = runMain (drawWithDepth drawShapeF (addDepth example2 0))
-main = runMain (drawWithDepth drawShapeF (getMax <$> addCoDepth example2))
+main = runMain (drawWithDepth drawShapeF (addDepth example2 0))
+-- main = runMain (drawWithDepth drawShapeF (getMax <$> addCoDepth example2))

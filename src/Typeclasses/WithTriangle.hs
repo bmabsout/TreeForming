@@ -1,8 +1,3 @@
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
-
 module Typeclasses.WithTriangle where
 
 import Diagrams
@@ -30,8 +25,5 @@ example3 = Circle (Triangle sq (Circle sq) triLeaf)
     triLeaf = Triangle Leaf Leaf Leaf
 
 
-example3Diag :: _ => Diag a -> Diag a
-example3Diag leaf = draw leaf example3
-
 main :: IO ()
-main = runMain example3Diag
+main = runMain (`draw` example3)

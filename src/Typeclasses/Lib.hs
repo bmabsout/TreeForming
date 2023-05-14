@@ -1,9 +1,3 @@
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
-{-# LANGUAGE RecordWildCards #-}
-
 module Typeclasses.Lib (Square(..), Circle(..), Leaf(..), Drawable(..), example, example2) where
 
 import Diagrams.Prelude
@@ -42,20 +36,12 @@ example =
   Circle $
     Circle $
       Square
-        (Circle (Circle Leaf))
-        (Circle Leaf)
-        Leaf
-        (Circle Leaf)
+        (Circle (Circle Leaf)) (Circle Leaf)
+        Leaf                   (Circle Leaf)
 
 example2 :: _
 example2 = Square example example example Leaf
 
 
-
-example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiagram = draw leafDiagram example2
-
-exampleDiag :: _ => Diag a -> Diag a
-exampleDiag leafDiagram = draw leafDiagram example
-
-main = runMain example2Diag
+main :: IO ()
+main = runMain (`draw` example2)

@@ -1,9 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE PartialTypeSignatures #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# OPTIONS_GHC -Wall #-}
-{-# OPTIONS_GHC -Wno-partial-type-signatures #-}
-
 module NormalADT.WithPoly where
 
 import Diagrams
@@ -68,8 +62,6 @@ shapeToDiagram leafDiagram = recurse
             in subDiagram2 <> polyDag # themed
         Leaf -> leafDiagram
 
-example2Diag :: _ => Diag a -> Diag a
-example2Diag leaf = shapeToDiagram leaf example3
 
 main :: IO ()
-main = runMain example2Diag
+main = runMain (`shapeToDiagram` example3)

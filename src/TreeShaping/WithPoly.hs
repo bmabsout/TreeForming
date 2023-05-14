@@ -38,6 +38,7 @@ drawWithPoly leaf = cata (drawWithPolyF leaf)
 
 convertExample :: Shapes -> WithPoly
 convertExample = hoist OrigF
+
 example3 :: WithPoly
 example3 = Poly [e, e, e, Leaf, Circle Leaf, e, Square e Leaf Leaf Leaf]
     where e = convertExample example2

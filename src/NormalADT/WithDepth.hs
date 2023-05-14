@@ -16,7 +16,7 @@ shapeToDiagramWithDepth leafDiagram = recurse 0
         let V4 toplShape toprShape botlShape botrShape =
               padSubDiagsAndResize (recurse (depth + 1) <$> V4 topl topr botl botr)
             subDiagram =
-              (toplShape ||| toprShape)
+                    (toplShape ||| toprShape)
                 === (botlShape ||| botrShape)
         in subDiagram # center <> square (maximum $ size subDiagram) # depthToTheme depth
       Circle subshape ->
@@ -25,8 +25,5 @@ shapeToDiagramWithDepth leafDiagram = recurse 0
       Leaf -> leafDiagram
 
 
-example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiag = shapeToDiagramWithDepth leafDiag example
-
 main :: IO ()
-main = runMain example2Diag
+main = runMain (`shapeToDiagramWithDepth` example2)

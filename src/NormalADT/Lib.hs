@@ -1,16 +1,16 @@
-{-# LANGUAGE RecordWildCards #-}
-
-
-module NormalADT.Lib (Shapes(..), shapeToDiagram, example, example2) where
+module NormalADT.Lib (Shapes(..), shapeToDiagram, simpol, example, example2) where
 
 import Diagrams.Prelude
 import Common
 import Linear
 
-data Shapes =
-    Square {topl:: Shapes, topr:: Shapes, botl:: Shapes, botr:: Shapes}
+data Shapes
+    = Square {topl:: Shapes, topr:: Shapes, botl:: Shapes, botr:: Shapes}
     | Circle Shapes
     | Leaf
+  deriving Show
+
+simpol = Circle Leaf
 
 example :: Shapes
 example = Circle $ Circle $
@@ -38,10 +38,5 @@ shapeToDiagram leafDiagram = recurse
         Leaf -> leafDiagram
 
 
-example2Diag :: _ => Diag a -> Diag a
-example2Diag leafDiagram = shapeToDiagram leafDiagram example2
-exampleDiag :: _ => Diag a -> Diag a
-exampleDiag leafDiagram = shapeToDiagram leafDiagram example
-
 main :: IO ()
-main = runMain example2Diag
+main = runMain (`shapeToDiagram` simpol)

@@ -23,12 +23,14 @@ instance Shapes Identity where
 
 example2 :: (Shapes repr, Renderable (Path V2 Double) a) =>
     Diag a -> repr (Diag a)
-example2 leafDiag = square (V4 (circle example) l l (circle l))
-    where l = leaf leafDiag
-          example = square (V4 l (circle l) (circle $ circle l) l)
-
-example2Diag :: Renderable (Path V2 Double) a => Diag a -> Diag a
-example2Diag leafDiag = runIdentity (example2 leafDiag)
+example2 leafDiag = square $ V4
+    (circle example) l
+    l                (circle l)
+  where
+    l = leaf leafDiag
+    example = square $ V4
+        l                   (circle l)
+        (circle $ circle l) l
 
 main :: IO ()
-main = runMain example2Diag
+main = runMain (runIdentity . example2)
