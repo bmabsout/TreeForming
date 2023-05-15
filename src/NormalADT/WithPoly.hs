@@ -29,6 +29,17 @@ example3 = Circle (Poly [sq, Circle sq, triLeaf, sq, triLeaf])
     where sq = Square (Circle Leaf) triLeaf (Poly (replicate 8 Leaf)) Leaf
           triLeaf = Poly [Leaf, Leaf, Leaf]
 
+fromSlide :: Shapes
+fromSlide = Poly
+    [Leaf, Leaf, Leaf, Circle Leaf,
+      Circle
+        (Square
+          Leaf (Circle Leaf)
+          Leaf Leaf
+        )
+    ]
+
+
 
 circularEnvelope :: forall a f. _ => f (Diag a) -> f (Diag a)
 circularEnvelope shapes = withEnvelope (circle maxDim :: Diag a) <$> shapes
@@ -64,4 +75,4 @@ shapeToDiagram leafDiagram = recurse
 
 
 main :: IO ()
-main = runMain (`shapeToDiagram` example3)
+main = runMain (`shapeToDiagram` fromSlide)

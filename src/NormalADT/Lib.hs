@@ -10,7 +10,9 @@ data Shapes
     | Leaf
   deriving Show
 
-simpol = Circle Leaf
+simpol = Circle (Square
+    Leaf (Circle Leaf)
+    Leaf Leaf)
 
 example :: Shapes
 example = Circle $ Circle $

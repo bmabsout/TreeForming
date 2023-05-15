@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+{-# LANGUAGE UndecidableInstances #-}
 module TreesThatGrow.WithPoly where
 import TreesThatGrow.Lib hiding (main)
 import Data.Void
@@ -11,7 +13,7 @@ type instance Xl WithPoly = Void
 type instance XShapes WithPoly  = [Shapes WithPoly]
 
 
-instance PostProcess [Shapes WithPoly] where
+instance Forall PostProcess e => PostProcess [Shapes e] where
     post subShapes leafDiag = subDiagram2 <> polyDag # themed
       where        
         shapes = padSubDiagsAndResize ((`post` leafDiag) <$> subShapes)

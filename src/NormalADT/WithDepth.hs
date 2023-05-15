@@ -26,4 +26,4 @@ shapeToDiagramWithDepth leafDiagram = recurse 0
 
 
 main :: IO ()
-main = runMain (`shapeToDiagramWithDepth` example2)
+main = runMain (`shapeToDiagramWithDepth` simpol)
