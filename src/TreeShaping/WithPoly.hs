@@ -10,18 +10,22 @@ import Diagrams
 import TreeShaping.Lib hiding (pattern Circle, pattern Square, Leaf)
 import Diagrams.Prelude (norm)
 
+newtype Poly a = PolyC [a]
+  deriving (Show, Eq, Functor, Foldable, Traversable)
+
 data WithPoly
   = Orig (ShapesF WithPoly)
-  | Poly [WithPoly]
+  | Pol (Poly WithPoly)
 --   deriving (Show)
 makeBaseFunctor ''WithPoly
 
 pattern Square a b c d = Orig (SF (Sq a b c d))
 pattern Circle a = Orig (CF (Circ a))
 pattern Leaf = Orig LeafF
+pattern Poly l = Pol (PolyC l)
 
-drawWithPolyF leaf (OrigF shapeF) = drawShapeF leaf shapeF
-drawWithPolyF _ (PolyF subShapes) = subDiagram2 <> polyDag # themed
+instance Drawable Poly where
+  draw (PolyC subShapes) = subDiagram2 <> polyDag # themed
     where
         shapes = padSubDiagsAndResize subShapes
         numShapes :: Num b => b
@@ -32,6 +36,9 @@ drawWithPolyF _ (PolyF subShapes) = subDiagram2 <> polyDag # themed
         directions = iterate (rotateBy (1 / numShapes)) (V2 0 l)
         subDiagram2 = zipWith translate directions shapes # mconcat
         polyDag = regPoly numShapes (r * tan theta + r)
+
+drawWithPolyF leaf (OrigF shapeF) = drawShapeF leaf shapeF
+drawWithPolyF _ (PolF subShapes) = draw subShapes
 
 drawWithPoly :: _ => Diag a -> WithPoly -> Diag a
 drawWithPoly leaf = cata (drawWithPolyF leaf)
